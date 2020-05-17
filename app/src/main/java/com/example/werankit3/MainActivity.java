@@ -1,4 +1,4 @@
-package com.example.werankit3.homepage;
+package com.example.werankit3;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -9,11 +9,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
 
-import com.example.werankit3.AccountActivity;
-import com.example.werankit3.CreateListActivity;
-import com.example.werankit3.MessageActivity;
-import com.example.werankit3.R;
-import com.example.werankit3.SearchActivity;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import java.util.ArrayList;
@@ -74,6 +69,9 @@ public class MainActivity extends AppCompatActivity {
         ArrayList<HomePageItem> items = new ArrayList<>();
 
         HomePageItem item = new HomePageItem();
+        items.add(item);
+
+        item = new HomePageItem();
         item.setTitle("Developer Picks");
         items.add(item);
 

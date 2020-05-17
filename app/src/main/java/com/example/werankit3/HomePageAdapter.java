@@ -1,16 +1,15 @@
-package com.example.werankit3.homepage;
+package com.example.werankit3;
 
 import android.content.Context;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
-
-import com.example.werankit3.R;
 
 import java.util.ArrayList;
 
@@ -18,6 +17,7 @@ public class HomePageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
     private static int TYPE_HEADING = 1;
     private static int TYPE_ITEM = 2;
+    private static int TYPE_BANNER = 3;
     private Context context;
     private ArrayList<HomePageItem> items;
     //private ArrayList<String> images = new ArrayList<>();
@@ -35,9 +35,13 @@ public class HomePageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             view = LayoutInflater.from(context).inflate(R.layout.item_heading, parent, false);
             return new HeadingViewHolder(view);
         }
-        else {
+        else if (viewType == TYPE_ITEM) {
             view = LayoutInflater.from(context).inflate(R.layout.item_homelist, parent, false);
             return new ItemViewHolder(view);
+        }
+        else {
+            view = LayoutInflater.from(context).inflate(R.layout.item_homepage_banner, parent, false);
+            return new BannerViewHolder(view);
         }
     }
 
@@ -48,6 +52,9 @@ public class HomePageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             ((ItemViewHolder)holder).SetItemDetails(items.get(position));
         else if (getItemViewType(position) == TYPE_HEADING) {
             ((HeadingViewHolder)holder).SetHeadingDetails(items.get(position));
+        }
+        else {
+            ((BannerViewHolder) holder).SetBannerDetails(items.get(position));
         }
     }
 
@@ -61,9 +68,11 @@ public class HomePageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         if (TextUtils.isEmpty(items.get(position).getDescription())) {
             return TYPE_HEADING;
         }
-        else {
-            return TYPE_ITEM;
+        else if (TextUtils.isEmpty(items.get(position).getTitle())){
+            return TYPE_BANNER;
         }
+        else
+            return TYPE_ITEM;
     }
 
     class ItemViewHolder extends RecyclerView.ViewHolder {
@@ -95,6 +104,17 @@ public class HomePageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
         private void SetHeadingDetails(HomePageItem heading) {
             txtTitle.setText(heading.getTitle());
+        }
+    }
+
+    class BannerViewHolder extends RecyclerView.ViewHolder {
+
+        public BannerViewHolder(@NonNull View itemView) {
+            super(itemView);
+        }
+
+        private void SetBannerDetails(HomePageItem heading) {
+
         }
     }
 }

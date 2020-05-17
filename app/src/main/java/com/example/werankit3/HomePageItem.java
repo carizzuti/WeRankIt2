@@ -1,4 +1,4 @@
-package com.example.werankit3.homepage;
+package com.example.werankit3;
 
 import android.media.Image;
 import android.widget.ImageView;
