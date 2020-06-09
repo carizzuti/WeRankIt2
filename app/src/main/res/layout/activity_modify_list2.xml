@@ -30,11 +30,11 @@
         android:layout_height="match_parent"
         android:id="@+id/recyclerViewModifyList"/>
 
-    <Spinner
+<!--    <Spinner
     android:id="@+id/static_spinner"
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
     android:layout_marginBottom="20dp"
-    android:layout_marginTop="20dp" />
+    android:layout_marginTop="20dp" />-->
 
 </RelativeLayout>

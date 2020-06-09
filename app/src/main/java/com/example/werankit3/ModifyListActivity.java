@@ -40,17 +40,17 @@ public class ModifyListActivity extends Activity {
 
         item = new ModifyListPageItem();
         item.setRank("1.");
-        item.setSpinner(CreateSpinner());
+        //item.setSpinner(CreateSpinner());
         items.add(item);
 
         item = new ModifyListPageItem();
         item.setRank("2.");
-        item.setSpinner(CreateSpinner());
+        //item.setSpinner(CreateSpinner());
         items.add(item);
 
         item = new ModifyListPageItem();
         item.setRank("3.");
-        item.setSpinner(CreateSpinner());
+        //item.setSpinner(CreateSpinner());
         items.add(item);
 
         // set adapter
@@ -59,7 +59,7 @@ public class ModifyListActivity extends Activity {
         recyclerView.setAdapter(adapter);
     }
 
-    private Spinner CreateSpinner() {
+/*    private Spinner CreateSpinner() {
         Spinner staticSpinner = (Spinner) findViewById(R.id.static_spinner);
 
         // Create an ArrayAdapter using the string array and a default spinner
@@ -75,5 +75,5 @@ public class ModifyListActivity extends Activity {
         staticSpinner.setAdapter(staticAdapter);
 
         return staticSpinner;
-    }
+    }*/
 }
