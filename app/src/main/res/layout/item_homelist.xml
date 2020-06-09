@@ -4,7 +4,8 @@
     android:layout_height="wrap_content"
     android:background="#fff"
     android:layout_margin="1dp"
-    android:padding="8dp">
+    android:padding="8dp"
+    android:id="@+id/recyclerViewHome">
 
     <ImageView
         android:id="@+id/image"

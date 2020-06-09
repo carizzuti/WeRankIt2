@@ -61,7 +61,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void initView() {
-        recyclerView = (RecyclerView) findViewById(R.id.recyclerView);
+        recyclerView = (RecyclerView) findViewById(R.id.recyclerViewHome);
         createList();
     }
 
