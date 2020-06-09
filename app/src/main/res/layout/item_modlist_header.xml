@@ -23,7 +23,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:padding="1dp"
-                android:text="Resident Evil Games"
+                android:text="Placeholder Title"
                 android:textColor="#000"
                 android:textSize="24sp"
                 android:textStyle="bold" />
@@ -33,7 +33,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:padding="1dp"
-                android:text="Ranking all Resident Evil games"
+                android:text="Placeholder Description"
                 android:textColor="#5d5d5d"
                 android:textSize="18sp" />
 
