@@ -1,3 +1,13 @@
 <resources>
     <string name="app_name">WeRankIt3</string>
+
+    <string-array name="resident_evil_games">
+        <item>Resident Evil 1</item>
+        <item>Resident Evil 2</item>
+        <item>Resident Evil 3</item>
+        <item>Resident Evil 4</item>
+        <item>Resident Evil 5</item>
+        <item>Resident Evil 6</item>
+        <item>Resident Evil 7</item>
+    </string-array>
 </resources>
