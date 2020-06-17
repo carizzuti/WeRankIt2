@@ -5,6 +5,7 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
 
@@ -65,32 +66,40 @@ public class ModifyListPageAdapter extends RecyclerView.Adapter<RecyclerView.Vie
 
         private TextView txtTitle;
         private TextView txtDescription;
+        private ImageView myImage;
 
         public HeaderViewHolder(@NonNull View itemView) {
             super(itemView);
             txtTitle = itemView.findViewById(R.id.txtModListTitle);
             txtDescription = itemView.findViewById(R.id.txtModListDescription);
+            myImage = itemView.findViewById(R.id.modlist_image);
         }
 
         private void SetHeaderDetails(ModifyListPageItem item) {
             txtTitle.setText(item.getTitle());
             txtDescription.setText(item.getDescription());
+            myImage.setImageResource(item.getImage());
         }
     }
 
     class ItemViewHolder extends RecyclerView.ViewHolder {
 
-        private TextView txtRank;
+        private TextView txtRank, txtName;
+        private ImageView itemImage;
         //private Spinner spinner;
 
         public ItemViewHolder(@NonNull View itemView) {
             super(itemView);
-            txtRank = itemView.findViewById(R.id.modlist_rank);
+            txtRank = itemView.findViewById(R.id.textRank);
+            txtName = itemView.findViewById(R.id.txtItemName);
+            itemImage = itemView.findViewById(R.id.item_image);
             //spinner = itemView.findViewById(R.id.static_spinner);
         }
 
         private void SetItemDetails(ModifyListPageItem item) {
             txtRank.setText(item.getRank());
+            txtName.setText(item.getTitle());
+            itemImage.setImageResource(item.getImage());
             //spinner.setOnItemSelectedListener(item.getSpinner().getOnItemSelectedListener());
         }
     }

@@ -2,6 +2,8 @@
     <string name="app_name">WeRankIt3</string>
 
     <string-array name="resident_evil_games">
+        <item>Resident Evil Games</item> <!-- Title -->
+        <item>Ranking the main numbered games in the Resident Evil Video Game series</item> <!-- Description -->
         <item>Resident Evil 1</item>
         <item>Resident Evil 2</item>
         <item>Resident Evil 3</item>
