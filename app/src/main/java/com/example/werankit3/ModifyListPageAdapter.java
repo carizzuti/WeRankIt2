@@ -34,7 +34,7 @@ public class ModifyListPageAdapter extends RecyclerView.Adapter<RecyclerView.Vie
             return new HeaderViewHolder(view);
         }
         else {
-            view = LayoutInflater.from(context).inflate(R.layout.item_modlist_header, parent, false);
+            view = LayoutInflater.from(context).inflate(R.layout.item_modlist_object, parent, false);
             return new ItemViewHolder(view);
         }
     }
@@ -81,16 +81,17 @@ public class ModifyListPageAdapter extends RecyclerView.Adapter<RecyclerView.Vie
     class ItemViewHolder extends RecyclerView.ViewHolder {
 
         private TextView txtRank;
-        private Spinner spinner;
+        //private Spinner spinner;
 
         public ItemViewHolder(@NonNull View itemView) {
             super(itemView);
             txtRank = itemView.findViewById(R.id.modlist_rank);
-            spinner = itemView.findViewById(R.id.static_spinner);
+            //spinner = itemView.findViewById(R.id.static_spinner);
         }
 
         private void SetItemDetails(ModifyListPageItem item) {
             txtRank.setText(item.getRank());
+            //spinner.setOnItemSelectedListener(item.getSpinner().getOnItemSelectedListener());
         }
     }
 }
