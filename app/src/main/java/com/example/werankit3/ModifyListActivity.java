@@ -1,6 +1,7 @@
 package com.example.werankit3;
 
 import android.app.Activity;
+import android.content.ClipData;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -11,37 +12,34 @@ import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
-public class ModifyListActivity extends Activity {
+public class ModifyListActivity extends AppCompatActivity implements StartDragListener {
 
-    private RecyclerView recyclerView;
+    RecyclerView recyclerView;
+    ModifyListPageAdapter mAdapter;
+    ItemTouchHelper touchHelper;
+
+    ArrayList<ModifyListPageItem> items = new ArrayList<>();
+
+    //ModifyListPageAdapter adapter = new ModifyListPageAdapter(this, items);
 
     String s1[];
     int images[] = { R.drawable.res_evil_logo, R.drawable.res_evil_1, R.drawable.res_evil_2, R.drawable.res_evil_3,
             R.drawable.res_evil_4, R.drawable.res_evil_5, R.drawable.res_evil_6, R.drawable.res_evil_7};
 
-    //Spinner staticSpinner;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_modify_list2);
-
-        s1 = getResources().getStringArray(R.array.resident_evil_games);
-
-/*        LayoutInflater inflater = getLayoutInflater();
-        View tmpView;
-        tmpView = inflater.inflate(R.layout.item_modlist_object, null);
-        getWindow().addContentView(tmpView, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
-                ViewGroup.LayoutParams.WRAP_CONTENT));*/
-
-        //staticSpinner = getWindow().findViewById(R.id.static_spinner);
 
         //Initialize and Assign Variable
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation);
@@ -80,7 +78,11 @@ public class ModifyListActivity extends Activity {
             }
         });
 
-        initView();
+        s1 = getResources().getStringArray(R.array.resident_evil_games);
+        recyclerView = findViewById(R.id.recyclerViewModifyList);
+        createList();
+
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
     }
 
     private void initView() {
@@ -89,8 +91,6 @@ public class ModifyListActivity extends Activity {
     }
 
     private void createList() {
-        ArrayList<ModifyListPageItem> items = new ArrayList<>();
-
         ModifyListPageItem item;
 
         item = new ModifyListPageItem();
@@ -109,24 +109,17 @@ public class ModifyListActivity extends Activity {
             items.add(item);
         }
 
-        // set adapter
-        ModifyListPageAdapter adapter = new ModifyListPageAdapter(this, items);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        recyclerView.setAdapter(adapter);
+        mAdapter = new ModifyListPageAdapter(items, this);
+
+        ItemTouchHelper.Callback callback = new ItemMoveCallback(mAdapter);
+        touchHelper = new ItemTouchHelper(callback);
+        touchHelper.attachToRecyclerView(recyclerView);
+
+        recyclerView.setAdapter(mAdapter);
     }
 
-/*    private Spinner createSpinner() {
-        // Create an ArrayAdapter using the string array and a default spinner
-        ArrayAdapter<CharSequence> staticAdapter = ArrayAdapter
-                .createFromResource(this, R.array.resident_evil_games,
-                        android.R.layout.simple_spinner_item);
-
-        // Specify the layout to use when the list of choices appears
-        staticAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-
-        // Apply the adapter to the spinner
-        staticSpinner.setAdapter(staticAdapter);
-
-        return staticSpinner;
-    }*/
+    @Override
+    public void requestDrag(RecyclerView.ViewHolder viewHolder) {
+        touchHelper.startDrag(viewHolder);
+    }
 }

@@ -1,8 +1,11 @@
 package com.example.werankit3;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
+import android.graphics.Color;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -13,16 +16,18 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
-public class ModifyListPageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+public class ModifyListPageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> implements ItemMoveCallback.ItemTouchHelperContract {
 
     private static int TYPE_HEADER = 1;
     private static int TYPE_ITEM = 2;
-    private Context context;
     private ArrayList<ModifyListPageItem> items;
 
-    public ModifyListPageAdapter(Context context, ArrayList<ModifyListPageItem> items) {
-        this.context = context;
+    private final StartDragListener mStartDragListener;
+
+    public ModifyListPageAdapter(ArrayList<ModifyListPageItem> items, StartDragListener startDragListener) {
+        mStartDragListener = startDragListener;
         this.items = items;
     }
 
@@ -31,21 +36,33 @@ public class ModifyListPageAdapter extends RecyclerView.Adapter<RecyclerView.Vie
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view;
         if (viewType == TYPE_HEADER) {
-            view = LayoutInflater.from(context).inflate(R.layout.item_modlist_header, parent, false);
+            view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_modlist_header, parent, false);
             return new HeaderViewHolder(view);
         }
         else {
-            view = LayoutInflater.from(context).inflate(R.layout.item_modlist_object, parent, false);
+            view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_modlist_object, parent, false);
             return new ItemViewHolder(view);
         }
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     @Override
-    public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
+    public void onBindViewHolder(final RecyclerView.ViewHolder holder, int position) {
         if (getItemViewType(position) == TYPE_HEADER)
             ((HeaderViewHolder)holder).SetHeaderDetails(items.get(position));
-        else
-            ((ItemViewHolder)holder).SetItemDetails(items.get(position));
+        else {
+            ((ItemViewHolder) holder).SetItemDetails(items.get(position));
+
+            ((ItemViewHolder) holder).dragImage.setOnTouchListener(new View.OnTouchListener() {
+                @Override
+                public boolean onTouch(View v, MotionEvent event) {
+                    if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                        mStartDragListener.requestDrag(holder);
+                    }
+                    return false;
+                }
+            });
+        }
     }
 
     @Override
@@ -62,7 +79,7 @@ public class ModifyListPageAdapter extends RecyclerView.Adapter<RecyclerView.Vie
             return TYPE_ITEM;
     }
 
-    class HeaderViewHolder extends RecyclerView.ViewHolder {
+    public class HeaderViewHolder extends RecyclerView.ViewHolder {
 
         private TextView txtTitle;
         private TextView txtDescription;
@@ -82,25 +99,53 @@ public class ModifyListPageAdapter extends RecyclerView.Adapter<RecyclerView.Vie
         }
     }
 
-    class ItemViewHolder extends RecyclerView.ViewHolder {
+    public class ItemViewHolder extends RecyclerView.ViewHolder {
 
         private TextView txtRank, txtName;
-        private ImageView itemImage;
-        //private Spinner spinner;
+        private ImageView itemImage, dragImage;
+        View rowView;
 
-        public ItemViewHolder(@NonNull View itemView) {
+        public ItemViewHolder(View itemView) {
             super(itemView);
+
             txtRank = itemView.findViewById(R.id.textRank);
             txtName = itemView.findViewById(R.id.txtItemName);
             itemImage = itemView.findViewById(R.id.item_image);
-            //spinner = itemView.findViewById(R.id.static_spinner);
+            dragImage = itemView.findViewById(R.id.drag_image);
+            rowView = itemView;
         }
 
         private void SetItemDetails(ModifyListPageItem item) {
             txtRank.setText(item.getRank());
             txtName.setText(item.getTitle());
             itemImage.setImageResource(item.getImage());
-            //spinner.setOnItemSelectedListener(item.getSpinner().getOnItemSelectedListener());
         }
+    }
+
+    @Override
+    public void onRowMoved(int fromPosition, int toPosition) {
+        if (fromPosition < toPosition) {
+            for (int i = fromPosition; i < toPosition; i++) {
+                Collections.swap(items, i, i + 1);
+            }
+        }
+        else {
+            for (int i = fromPosition; i > toPosition; i--) {
+                Collections.swap(items, i, i - 1);
+            }
+        }
+
+        notifyItemMoved(fromPosition, toPosition);
+
+    }
+
+    @Override
+    public void onRowSelected(ModifyListPageAdapter.ItemViewHolder myViewHolder) {
+        myViewHolder.rowView.setBackgroundColor(Color.GRAY);
+    }
+
+    @Override
+    public void onRowClear(ModifyListPageAdapter.ItemViewHolder myViewHolder) {
+        myViewHolder.rowView.setBackgroundColor(Color.WHITE);
     }
 }

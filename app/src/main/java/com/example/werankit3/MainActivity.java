@@ -108,5 +108,9 @@ public class MainActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(adapter);
     }
+
+    public void BottomNavigation(R.id id) {
+
+    }
 }
 
