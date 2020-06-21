@@ -9,7 +9,9 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.Spinner;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -19,22 +21,25 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
+import org.w3c.dom.Text;
+
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Vector;
 
 public class ModifyListActivity extends AppCompatActivity implements StartDragListener {
 
-    RecyclerView recyclerView;
-    ModifyListPageAdapter mAdapter;
+    RecyclerView recyclerViewList, recyclerViewRank;
+    ModifyListPageAdapter mAdapterList;
+    RankAdapter mAdapterRank;
     ItemTouchHelper touchHelper;
 
-    ArrayList<ModifyListPageItem> items = new ArrayList<>();
-
-    //ModifyListPageAdapter adapter = new ModifyListPageAdapter(this, items);
+    //ArrayList<ModifyListPageItem> items = new ArrayList<>();
 
     String s1[];
     int images[] = { R.drawable.res_evil_logo, R.drawable.res_evil_1, R.drawable.res_evil_2, R.drawable.res_evil_3,
             R.drawable.res_evil_4, R.drawable.res_evil_5, R.drawable.res_evil_6, R.drawable.res_evil_7};
+    Vector<String> ranks = new Vector<String>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -79,43 +84,55 @@ public class ModifyListActivity extends AppCompatActivity implements StartDragLi
         });
 
         s1 = getResources().getStringArray(R.array.resident_evil_games);
-        recyclerView = findViewById(R.id.recyclerViewModifyList);
+        recyclerViewList = findViewById(R.id.recyclerViewModifyList);
+        recyclerViewRank = findViewById(R.id.recyclerViewRank);
+
+        createHeader();
         createList();
 
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        recyclerViewList.setLayoutManager(new LinearLayoutManager(this));
+        recyclerViewRank.setLayoutManager(new LinearLayoutManager(this));
     }
 
-    private void initView() {
-        recyclerView = (RecyclerView) findViewById(R.id.recyclerViewModifyList);
-        createList();
+    private void createHeader() {
+        TextView title = findViewById(R.id.txtModListTitle);
+        TextView description = findViewById(R.id.txtModListDescription);
+        ImageView image = findViewById(R.id.modlist_image);
+
+        title.setText(s1[0]);
+        description.setText(s1[1]);
+        image.setImageResource(images[0]);
     }
 
-    private void createList() {
+    public void createList() {
+        ArrayList<ModifyListPageItem> items = new ArrayList<>();
+
         ModifyListPageItem item;
 
-        item = new ModifyListPageItem();
+        /*item = new ModifyListPageItem();
         item.setTitle(s1[0]);
         item.setDescription(s1[1]);
         item.setImage(images[0]);
-        items.add(item);
+        items.add(item);*/
 
         for (int i = 2; i < s1.length; i++) {
             item = new ModifyListPageItem();
-            int rank = i - 1;
+            ranks.add(String.valueOf(i - 1));
 
-            item.setRank(rank + ". ");
             item.setTitle(s1[i]);
             item.setImage(images[i - 1]);
             items.add(item);
         }
 
-        mAdapter = new ModifyListPageAdapter(items, this);
+        mAdapterList = new ModifyListPageAdapter(items, this);
+        mAdapterRank = new RankAdapter(ranks);
 
-        ItemTouchHelper.Callback callback = new ItemMoveCallback(mAdapter);
+        ItemTouchHelper.Callback callback = new ItemMoveCallback(mAdapterList);
         touchHelper = new ItemTouchHelper(callback);
-        touchHelper.attachToRecyclerView(recyclerView);
+        touchHelper.attachToRecyclerView(recyclerViewList);
 
-        recyclerView.setAdapter(mAdapter);
+        recyclerViewList.setAdapter(mAdapterList);
+        recyclerViewRank.setAdapter(mAdapterRank);
     }
 
     @Override
