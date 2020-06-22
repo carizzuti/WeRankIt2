@@ -93,7 +93,7 @@ public class MainActivity extends AppCompatActivity {
 
         item = new HomePageItem();
         item.setTitle("Resident Evil Games");
-        item.setDescription("Ranking all Resident Evil games");
+        item.setDescription("Ranking all numbered Resident Evil games");
         item.setUserCreated(true);
         items.add(item);
 

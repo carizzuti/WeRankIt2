@@ -1,0 +1,81 @@
+{
+  "lists": [
+    {
+      "id": 1,
+      "title": "Star Wars Main Films",
+      "description": "Ranking the numbered Star Wars movies",
+      "userCreated": false,
+      "creator" : "WeRankIt!",
+      "listobjects": {
+              "object1": "Episode I - The Phantom Menace",
+              "object2": "Episode II - Attack of the Clones",
+              "object3": "Episode III - Revenge of the Sith",
+              "object4": "Episode IV - A New Hope",
+              "object5": "Episode V - The Empire Strikes Back",
+              "object6": "Episode VI - Return of the Jedi",
+              "object7": "Episode VII - The Force Awakens",
+              "object8": "Episode VIII - The Last Jedi",
+              "object9": "Episode IX - The Rise of Skywalker"
+      }
+    },
+    {
+      "id": 2,
+      "title": "Resident Evil Games",
+      "description": "Ranking all numbered Resident Evil games",
+      "userCreated": true,
+      "creator" : "crizzuti",
+      "listobjects": {
+              "object1": "Resident Evil",
+              "object2": "Resident Evil 2",
+              "object3": "Resident Evil 3",
+              "object4": "Resident Evil 4",
+              "object5": "Resident Evil 5",
+              "object6": "Resident Evil 6",
+              "object7": "Resident Evil 7"
+      }
+    },
+    {
+      "id": 3,
+      "title": "Final Fantasy Games",
+      "description": "Ranking all numbered Final Fantasy games",
+      "userCreated": false,
+      "creator" : "WeRankIt!",
+      "listObjects": {
+              "object1": "Final Fantasy I",
+              "object2": "Final Fantasy II",
+              "object3": "Final Fantasy III",
+              "object4": "Final Fantasy IV",
+              "object5": "Final Fantasy V",
+              "object6": "Final Fantasy VI",
+              "object7": "Final Fantasy VII",
+              "object8": "Final Fantasy VIII",
+              "object9": "Final Fantasy IX",
+              "object10": "Final Fantasy X",
+              "object11": "Final Fantasy XI",
+              "object12": "Final Fantasy XII",
+              "object13": "Final Fantasy XIII",
+              "object14": "Final Fantasy XIV",
+              "object15": "Final Fantasy XV"
+      }
+    },
+    {
+      "id": 4,
+      "title": "Seasons of The Office (US)",
+      "description": "Ranking all seasons of The Office (US)",
+      "userCreated": true,
+      "creator" : "crizzuti",
+      "listObjects": {
+              "object1" : "Season 1",
+              "object2" : "Season 2",
+              "object3" : "Season 3",
+              "object4" : "Season 4",
+              "object5" : "Season 5",
+              "object6" : "Season 6",
+              "object7" : "Season 7",
+              "object8" : "Season 8",
+              "object9" : "Season 9",
+              "object10" : "Season 10"
+      }
+    }
+  ]
+}
