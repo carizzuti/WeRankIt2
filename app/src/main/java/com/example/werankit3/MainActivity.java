@@ -11,11 +11,19 @@ import android.view.MenuItem;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
 
     private RecyclerView recyclerView;
+    ArrayList<HomePageItem> items = new ArrayList<>();
+    HomePageItem item = new HomePageItem();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,17 +65,12 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        initView();
-    }
-
-    private void initView() {
         recyclerView = (RecyclerView) findViewById(R.id.recyclerViewHome);
+        items.add(item);
         createList();
     }
 
     private void createList() {
-        ArrayList<HomePageItem> items = new ArrayList<>();
-
         HomePageItem item = new HomePageItem();
         items.add(item);
 
@@ -75,33 +78,15 @@ public class MainActivity extends AppCompatActivity {
         item.setTitle("Developer Picks");
         items.add(item);
 
-        item = new HomePageItem();
-        item.setTitle("Star Wars Main Films");
-        item.setDescription("Ranking the numbered Star Wars movies");
-        item.setUserCreated(false);
-        items.add(item);
+        parseJSON(false);
 
-        item = new HomePageItem();
-        item.setTitle("Final Fantasy Games");
-        item.setDescription("Ranking all Final Fantasy games");
-        item.setUserCreated(false);
-        items.add(item);
+
 
         item = new HomePageItem();
         item.setTitle("Popular User Created Lists");
         items.add(item);
 
-        item = new HomePageItem();
-        item.setTitle("Resident Evil Games");
-        item.setDescription("Ranking all numbered Resident Evil games");
-        item.setUserCreated(true);
-        items.add(item);
-
-        item = new HomePageItem();
-        item.setTitle("Seasons of The Office");
-        item.setDescription("Ranking all seasons of The Office");
-        item.setUserCreated(true);
-        items.add(item);
+        parseJSON(true);
 
         // set adapter
         HomePageAdapter adapter = new HomePageAdapter(this, items);
@@ -109,8 +94,48 @@ public class MainActivity extends AppCompatActivity {
         recyclerView.setAdapter(adapter);
     }
 
-    public void BottomNavigation(R.id id) {
+    private void parseJSON(boolean userCreated) {
+        JSONObject obj;
 
+        try {
+            if (userCreated)
+                obj = new JSONObject(loadJSONFromAsset("user_created_lists.json"));
+            else
+                obj = new JSONObject(loadJSONFromAsset("dev_created_lists.json"));
+
+            JSONArray listArray = obj.getJSONArray("lists");
+
+            for (int i = 0; i <listArray.length(); i++) {
+                JSONObject listDetail = listArray.getJSONObject(i);
+
+                item = new HomePageItem();
+                item.setTitle(listDetail.getString("title"));
+                item.setDescription(listDetail.getString("description"));
+                item.setUserCreated(listDetail.getBoolean("userCreated"));
+                items.add(item);
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public String loadJSONFromAsset(String filename) {
+        String json = null;
+
+        try {
+            InputStream is = getAssets().open(filename);
+            int size = is.available();
+            byte[] buffer = new byte[size];
+            is.read(buffer);
+            is.close();
+            json = new String(buffer, "UTF-8");
+        } catch (IOException ex) {
+            ex.printStackTrace();
+            return null;
+        }
+
+        return json;
     }
 }
+
 

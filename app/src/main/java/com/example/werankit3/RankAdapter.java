@@ -33,7 +33,7 @@ public class RankAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
-        String rank = rVector.elementAt(position);
+        String rank = (rVector.elementAt(position));
         ((RankHolder)holder).setDetails(rank);
     }
 
