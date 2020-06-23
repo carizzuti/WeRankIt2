@@ -1,16 +1,9 @@
 package com.example.werankit3;
 
-import android.app.Activity;
-import android.content.ClipData;
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.LayoutInflater;
 import android.view.MenuItem;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.ImageView;
-import android.widget.Spinner;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -21,20 +14,26 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
-import org.w3c.dom.Text;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Vector;
 
 public class ModifyListActivity extends AppCompatActivity implements StartDragListener {
 
-    RecyclerView recyclerViewList, recyclerViewRank;
+    private static int TYPE_HEADER = 1;
+    private static int TYPE_ITEM = 2;
+    RecyclerView recyclerViewList, recyclerViewRank, recyclerViewContainer;
     ModifyListPageAdapter mAdapterList;
     RankAdapter mAdapterRank;
     ItemTouchHelper touchHelper;
 
-    //ArrayList<ModifyListPageItem> items = new ArrayList<>();
+    ArrayList<ModifyListPageItem> items = new ArrayList<>();
+    ModifyListPageItem item;
 
     String s1[];
     int images[] = { R.drawable.res_evil_logo, R.drawable.res_evil_1, R.drawable.res_evil_2, R.drawable.res_evil_3,
@@ -95,34 +94,12 @@ public class ModifyListActivity extends AppCompatActivity implements StartDragLi
     }
 
     private void createHeader() {
-        TextView title = findViewById(R.id.txtModListTitle);
-        TextView description = findViewById(R.id.txtModListDescription);
-        ImageView image = findViewById(R.id.modlist_image);
-
-        title.setText(s1[0]);
-        description.setText(s1[1]);
-        image.setImageResource(images[0]);
+        parseJSON(TYPE_HEADER);
     }
 
     public void createList() {
-        ArrayList<ModifyListPageItem> items = new ArrayList<>();
 
-        ModifyListPageItem item;
-
-        /*item = new ModifyListPageItem();
-        item.setTitle(s1[0]);
-        item.setDescription(s1[1]);
-        item.setImage(images[0]);
-        items.add(item);*/
-
-        for (int i = 2; i < s1.length; i++) {
-            item = new ModifyListPageItem();
-            ranks.add(String.valueOf(i - 1));
-
-            item.setTitle(s1[i]);
-            item.setImage(images[i - 1]);
-            items.add(item);
-        }
+        parseJSON(TYPE_ITEM);
 
         mAdapterList = new ModifyListPageAdapter(items, this);
         mAdapterRank = new RankAdapter(ranks);
@@ -138,5 +115,62 @@ public class ModifyListActivity extends AppCompatActivity implements StartDragLi
     @Override
     public void requestDrag(RecyclerView.ViewHolder viewHolder) {
         touchHelper.startDrag(viewHolder);
+    }
+
+    private void parseJSON(int viewType) {
+        JSONObject obj;
+
+        try {
+            obj = new JSONObject(loadJSONFromAsset("user_created_lists.json"));
+            JSONArray listArray = obj.getJSONArray("lists");
+
+            //for (int i = 0; i < listArray.length(); i++) {
+                JSONObject listDetail = listArray.getJSONObject(1);
+
+                // header
+                if (viewType == 1) {
+                    TextView title = findViewById(R.id.txtModListTitle);
+                    TextView description = findViewById(R.id.txtModListDescription);
+                    ImageView image = findViewById(R.id.modlist_image);
+
+                    title.setText(listDetail.getString("title"));
+                    description.setText(listDetail.getString("description"));
+                }
+                // list item
+                else {
+                    JSONObject listItem = listDetail.getJSONObject("listObjects");
+
+                    for (int i = 0; i < listItem.length(); i++) {
+
+                        item = new ModifyListPageItem();
+                        ranks.add(String.valueOf(i + 1));
+
+                        item.setTitle(listItem.getString("object" + (i+1)));
+                        //item.setImage(images[i - 1]);
+                        items.add(item);
+                    }
+                }
+            //}
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public String loadJSONFromAsset(String filename) {
+        String json = null;
+
+        try {
+            InputStream is = getAssets().open(filename);
+            int size = is.available();
+            byte[] buffer = new byte[size];
+            is.read(buffer);
+            is.close();
+            json = new String(buffer, "UTF-8");
+        } catch (IOException ex) {
+            ex.printStackTrace();
+            return null;
+        }
+
+        return json;
     }
 }

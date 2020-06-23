@@ -80,8 +80,6 @@ public class MainActivity extends AppCompatActivity {
 
         parseJSON(false);
 
-
-
         item = new HomePageItem();
         item.setTitle("Popular User Created Lists");
         items.add(item);

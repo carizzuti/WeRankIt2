@@ -6,7 +6,7 @@
       "description": "Ranking the numbered Star Wars movies",
       "userCreated": false,
       "creator" : "WeRankIt!",
-      "listobjects": {
+      "listObjects": {
               "object1": "Episode I - The Phantom Menace",
               "object2": "Episode II - Attack of the Clones",
               "object3": "Episode III - Revenge of the Sith",
