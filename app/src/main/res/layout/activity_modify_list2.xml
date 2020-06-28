@@ -59,7 +59,39 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent" >
 
-    <com.google.android.material.bottomnavigation.BottomNavigationView
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical" >
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/recyclerViewModifyList"
+                    android:layout_width="746dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="20dp"
+                    android:layout_marginLeft="20dp"
+                    android:layout_marginTop="150dp"
+                    android:layout_marginBottom="30dp"
+                    android:layout_toEndOf="@+id/recyclerViewRank"
+                    android:layout_toRightOf="@+id/recyclerViewRank" />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/recyclerViewRank"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="15dp"
+                    android:layout_marginTop="150dp"
+                    android:layout_marginBottom="30dp">
+
+                </androidx.recyclerview.widget.RecyclerView>
+            </RelativeLayout>
+        </ScrollView>
+
+        <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottom_navigation"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -70,25 +102,8 @@
         app:itemTextColor="@drawable/selector"
         app:layout_constraintBottom_toBottomOf="parent"
         app:menu="@menu/menu_navigation" >
-    </com.google.android.material.bottomnavigation.BottomNavigationView>
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recyclerViewRank"
-        android:layout_width="763dp"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="15dp"
-        android:layout_marginTop="160dp"
-        android:layout_marginBottom="25dp">
-    </androidx.recyclerview.widget.RecyclerView>
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recyclerViewModifyList"
-        android:layout_width="746dp"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="100dp"
-        android:layout_marginTop="160dp"
-        android:layout_marginBottom="25dp">
-    </androidx.recyclerview.widget.RecyclerView>
+        </com.google.android.material.bottomnavigation.BottomNavigationView>
 
     </RelativeLayout>
 
