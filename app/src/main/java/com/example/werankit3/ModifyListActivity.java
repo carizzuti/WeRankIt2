@@ -27,7 +27,7 @@ public class ModifyListActivity extends AppCompatActivity implements StartDragLi
 
     private static int TYPE_HEADER = 1;
     private static int TYPE_ITEM = 2;
-    RecyclerView recyclerViewList, recyclerViewRank, recyclerViewContainer;
+    RecyclerView recyclerViewList, recyclerViewRank;
     ModifyListPageAdapter mAdapterList;
     RankAdapter mAdapterRank;
     ItemTouchHelper touchHelper;
@@ -35,9 +35,6 @@ public class ModifyListActivity extends AppCompatActivity implements StartDragLi
     ArrayList<ModifyListPageItem> items = new ArrayList<>();
     ModifyListPageItem item;
 
-    String s1[];
-    int images[] = { R.drawable.res_evil_logo, R.drawable.res_evil_1, R.drawable.res_evil_2, R.drawable.res_evil_3,
-            R.drawable.res_evil_4, R.drawable.res_evil_5, R.drawable.res_evil_6, R.drawable.res_evil_7};
     Vector<String> ranks = new Vector<String>();
 
     @Override
@@ -82,24 +79,27 @@ public class ModifyListActivity extends AppCompatActivity implements StartDragLi
             }
         });
 
-        s1 = getResources().getStringArray(R.array.resident_evil_games);
+        Intent intent = getIntent();
+        boolean userCreatedList = intent.getBooleanExtra(MainActivity.EXTRA_USER_CREATED, false);
+        int list_id = intent.getIntExtra(MainActivity.EXTRA_ID, 1);
+
         recyclerViewList = findViewById(R.id.recyclerViewModifyList);
         recyclerViewRank = findViewById(R.id.recyclerViewRank);
 
-        createHeader();
-        createList();
+        createHeader(list_id, userCreatedList);
+        createList(list_id, userCreatedList);
 
         recyclerViewList.setLayoutManager(new LinearLayoutManager(this));
         recyclerViewRank.setLayoutManager(new LinearLayoutManager(this));
     }
 
-    private void createHeader() {
-        parseJSON(TYPE_HEADER);
+    private void createHeader(int list_id, boolean userCreated) {
+        parseJSON(TYPE_HEADER, userCreated, list_id);
     }
 
-    public void createList() {
+    public void createList(int list_id, boolean userCreated) {
 
-        parseJSON(TYPE_ITEM);
+        parseJSON(TYPE_ITEM, userCreated, list_id);
 
         mAdapterList = new ModifyListPageAdapter(items, this);
         mAdapterRank = new RankAdapter(ranks);
@@ -117,15 +117,20 @@ public class ModifyListActivity extends AppCompatActivity implements StartDragLi
         touchHelper.startDrag(viewHolder);
     }
 
-    private void parseJSON(int viewType) {
+    private void parseJSON(int viewType, boolean userCreated, int list_id) {
         JSONObject obj;
 
         try {
-            obj = new JSONObject(loadJSONFromAsset("user_created_lists.json"));
+
+            if (userCreated)
+                obj = new JSONObject(loadJSONFromAsset("user_created_lists.json"));
+            else
+                obj = new JSONObject(loadJSONFromAsset("dev_created_lists.json"));
+
             JSONArray listArray = obj.getJSONArray("lists");
 
             //for (int i = 0; i < listArray.length(); i++) {
-                JSONObject listDetail = listArray.getJSONObject(1);
+                JSONObject listDetail = listArray.getJSONObject(list_id - 1);
 
                 // header
                 if (viewType == 1) {

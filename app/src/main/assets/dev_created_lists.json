@@ -1,7 +1,7 @@
 {
   "lists": [
     {
-      "id": 1,
+      "list_id": 1,
       "title": "Star Wars Main Films",
       "description": "Ranking the numbered Star Wars movies",
       "userCreated": false,
@@ -19,7 +19,7 @@
       }
     },
     {
-      "id": 2,
+      "list_id": 2,
       "title": "Final Fantasy Games",
       "description": "Ranking all numbered Final Fantasy games",
       "userCreated": false,

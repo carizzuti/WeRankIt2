@@ -8,6 +8,8 @@ public class ModifyListPageItem {
     private String description;
     private String rank;
     private int image;
+    private int list_id;
+    private boolean userCreated;
 
     public ModifyListPageItem()
     {
@@ -25,9 +27,13 @@ public class ModifyListPageItem {
     public void setDescription(String desc) {this.description=desc;}
     public void setRank(String rank) {this.rank=rank;}
     public void setImage(int imgRes) {this.image=imgRes;}
+    public void setList_id(int list_id) {this.list_id=list_id;}
+    public void setUserCreated(boolean userCreated) {this.userCreated=userCreated;}
 
     public String getTitle() {return title;}
     public String getDescription() {return description;}
     public String getRank() {return rank;}
     public int getImage() {return image;}
+    public int getList_id() {return list_id;}
+    public boolean isUserCreated() {return userCreated;}
 }

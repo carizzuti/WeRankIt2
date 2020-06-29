@@ -20,11 +20,13 @@ public class HomePageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     private static int TYPE_BANNER = 3;
     private Context context;
     private ArrayList<HomePageItem> items;
-    //private ArrayList<String> images = new ArrayList<>();
+    private OnListItemListener mOnListItemListener;
 
-    public HomePageAdapter(Context context, ArrayList<HomePageItem> items) {
+
+    public HomePageAdapter(Context context, ArrayList<HomePageItem> items, OnListItemListener onListItemListener) {
         this.context = context;
         this.items = items;
+        this.mOnListItemListener = onListItemListener;
     }
 
     @NonNull
@@ -37,7 +39,7 @@ public class HomePageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         }
         else if (viewType == TYPE_ITEM) {
             view = LayoutInflater.from(context).inflate(R.layout.item_homelist, parent, false);
-            return new ItemViewHolder(view);
+            return new ItemViewHolder(view, mOnListItemListener);
         }
         else {
             view = LayoutInflater.from(context).inflate(R.layout.item_homepage_banner, parent, false);
@@ -75,22 +77,32 @@ public class HomePageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             return TYPE_ITEM;
     }
 
-    class ItemViewHolder extends RecyclerView.ViewHolder {
+    class ItemViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         private TextView txtTitle;
         private TextView txtDescription;
         // private ImageView image;
+        OnListItemListener onListItemListener;
 
-        public ItemViewHolder(@NonNull View itemView) {
+        public ItemViewHolder(@NonNull View itemView, OnListItemListener onListItemListener) {
             super(itemView);
             txtTitle = itemView.findViewById(R.id.txtTitle);
             txtDescription = itemView.findViewById(R.id.txtDescription);
             // image = itemView.findViewById(R.id.image);
+            this.onListItemListener = onListItemListener;
+
+            itemView.setOnClickListener(this);
         }
 
         private void SetItemDetails(HomePageItem item) {
             txtTitle.setText(item.getTitle());
             txtDescription.setText(item.getDescription());
+        }
+
+        @Override
+        public void onClick(View v) {
+            onListItemListener.OnListItemClick(getAdapterPosition());
+
         }
     }
 
@@ -116,5 +128,9 @@ public class HomePageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         private void SetBannerDetails(HomePageItem heading) {
 
         }
+    }
+
+    public interface OnListItemListener {
+        void OnListItemClick(int position);
     }
 }

@@ -1,7 +1,7 @@
 {
   "lists": [
     {
-      "id": 1,
+      "list_id": 1,
       "title": "Resident Evil Games",
       "description": "Ranking all numbered Resident Evil games",
       "userCreated": true,
@@ -17,7 +17,7 @@
       }
     },
     {
-      "id": 2,
+      "list_id": 2,
       "title": "Seasons of The Office (US)",
       "description": "Ranking all seasons of The Office (US)",
       "userCreated": true,

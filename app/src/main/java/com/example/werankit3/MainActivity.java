@@ -19,7 +19,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements HomePageAdapter.OnListItemListener {
+
+    public static final String EXTRA_USER_CREATED = "com.example.werankit3.EXTRA_USER_CREATED";
+    public static final String EXTRA_ID = "com.example.werankit3.EXTRA_ID";
 
     private RecyclerView recyclerView;
     ArrayList<HomePageItem> items = new ArrayList<>();
@@ -66,13 +69,11 @@ public class MainActivity extends AppCompatActivity {
         });
 
         recyclerView = (RecyclerView) findViewById(R.id.recyclerViewHome);
-        items.add(item);
         createList();
     }
 
     private void createList() {
         HomePageItem item = new HomePageItem();
-        items.add(item);
 
         item = new HomePageItem();
         item.setTitle("Developer Picks");
@@ -87,7 +88,7 @@ public class MainActivity extends AppCompatActivity {
         parseJSON(true);
 
         // set adapter
-        HomePageAdapter adapter = new HomePageAdapter(this, items);
+        HomePageAdapter adapter = new HomePageAdapter(this, items, this);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(adapter);
     }
@@ -110,6 +111,7 @@ public class MainActivity extends AppCompatActivity {
                 item.setTitle(listDetail.getString("title"));
                 item.setDescription(listDetail.getString("description"));
                 item.setUserCreated(listDetail.getBoolean("userCreated"));
+                item.setList_id(listDetail.getInt("list_id"));
                 items.add(item);
             }
         } catch (JSONException e) {
@@ -133,6 +135,14 @@ public class MainActivity extends AppCompatActivity {
         }
 
         return json;
+    }
+
+    @Override
+    public void OnListItemClick(int position) {
+        Intent intent = new Intent(this, ModifyListActivity.class);
+        intent.putExtra(EXTRA_USER_CREATED, (items.get(position)).isUserCreated());
+        intent.putExtra(EXTRA_ID, (items.get(position)).getList_id());
+        startActivity(intent);
     }
 }
 
