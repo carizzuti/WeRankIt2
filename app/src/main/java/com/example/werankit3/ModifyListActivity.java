@@ -3,6 +3,8 @@ package com.example.werankit3;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -85,6 +87,12 @@ public class ModifyListActivity extends AppCompatActivity implements StartDragLi
 
         recyclerViewList = findViewById(R.id.recyclerViewModifyList);
         recyclerViewRank = findViewById(R.id.recyclerViewRank);
+
+        ViewGroup.LayoutParams params = recyclerViewList.getLayoutParams();
+        recyclerViewList.setLayoutParams(params);
+
+        params = recyclerViewRank.getLayoutParams();
+        recyclerViewRank.setLayoutParams(params);
 
         createHeader(list_id, userCreatedList);
         createList(list_id, userCreatedList);

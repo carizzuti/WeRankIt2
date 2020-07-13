@@ -9,6 +9,8 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 
@@ -116,14 +118,12 @@ public class ModifyListPageAdapter extends RecyclerView.Adapter<RecyclerView.Vie
 
     public class ItemViewHolder extends RecyclerView.ViewHolder {
 
-        private TextView txtRank, txtName;
+        private TextView txtName;
         private ImageView itemImage, dragImage;
         View rowView;
 
         public ItemViewHolder(View itemView) {
             super(itemView);
-
-            //txtRank = itemView.findViewById(R.id.textRank);
             txtName = itemView.findViewById(R.id.txtItemName);
             itemImage = itemView.findViewById(R.id.item_image);
             dragImage = itemView.findViewById(R.id.drag_image);
@@ -131,7 +131,6 @@ public class ModifyListPageAdapter extends RecyclerView.Adapter<RecyclerView.Vie
         }
 
         private void SetItemDetails(ModifyListPageItem item) {
-            //txtRank.setText(item.getRank());
             txtName.setText(item.getTitle());
             itemImage.setImageResource(item.getImage());
         }

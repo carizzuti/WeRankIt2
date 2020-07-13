@@ -35,7 +35,7 @@
                 android:padding="1dp"
                 android:text="Placeholder Title"
                 android:textColor="#000"
-                android:textSize="24sp"
+                android:textSize="30sp"
                 android:textStyle="bold"
                 app:layout_constraintStart_toEndOf="@+id/modlist_image"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -47,7 +47,7 @@
                 android:padding="1dp"
                 android:text="Placeholder Description"
                 android:textColor="#5d5d5d"
-                android:textSize="16sp"
+                android:textSize="24sp"
                 app:layout_constraintLeft_toLeftOf="@id/txtModListTitle"
                 app:layout_constraintTop_toBottomOf="@+id/txtModListTitle" />
 
@@ -61,12 +61,13 @@
 
         <ScrollView
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:layout_marginBottom="150dp">
 
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical" >
+                android:orientation="vertical">
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/recyclerViewModifyList"
@@ -86,10 +87,22 @@
                     android:layout_marginLeft="15dp"
                     android:layout_marginTop="150dp"
                     android:layout_marginBottom="30dp">
-
                 </androidx.recyclerview.widget.RecyclerView>
             </RelativeLayout>
         </ScrollView>
+
+        <Button
+            android:id="@+id/button3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/bottom_navigation"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="25dp"
+            android:width="100dp"
+            android:height="50dp"
+            android:textSize="24dp"
+
+            android:text="Save" />
 
         <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottom_navigation"
