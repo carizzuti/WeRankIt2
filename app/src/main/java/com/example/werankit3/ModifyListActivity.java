@@ -1,14 +1,18 @@
 package com.example.werankit3;
 
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
+import android.util.JsonWriter;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -19,11 +23,22 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStreamWriter;
+import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Vector;
+
+import static java.lang.System.out;
 
 public class ModifyListActivity extends AppCompatActivity implements StartDragListener {
 
@@ -33,12 +48,14 @@ public class ModifyListActivity extends AppCompatActivity implements StartDragLi
     ModifyListPageAdapter mAdapterList;
     RankAdapter mAdapterRank;
     ItemTouchHelper touchHelper;
+    Button btnSave;
 
     ArrayList<ModifyListPageItem> items = new ArrayList<>();
     ModifyListPageItem item;
 
     Vector<String> ranks = new Vector<String>();
 
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -87,24 +104,31 @@ public class ModifyListActivity extends AppCompatActivity implements StartDragLi
 
         recyclerViewList = findViewById(R.id.recyclerViewModifyList);
         recyclerViewRank = findViewById(R.id.recyclerViewRank);
-
-        ViewGroup.LayoutParams params = recyclerViewList.getLayoutParams();
-        recyclerViewList.setLayoutParams(params);
-
-        params = recyclerViewRank.getLayoutParams();
-        recyclerViewRank.setLayoutParams(params);
+        btnSave = findViewById(R.id.button3);
 
         createHeader(list_id, userCreatedList);
         createList(list_id, userCreatedList);
 
         recyclerViewList.setLayoutManager(new LinearLayoutManager(this));
         recyclerViewRank.setLayoutManager(new LinearLayoutManager(this));
+
+        btnSave.setOnClickListener(new View.OnClickListener() {
+            @RequiresApi(api = Build.VERSION_CODES.KITKAT)
+            @Override
+            public void onClick(View view) {
+                saveToFile();
+            }
+        });
+
+
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     private void createHeader(int list_id, boolean userCreated) {
         parseJSON(TYPE_HEADER, userCreated, list_id);
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     public void createList(int list_id, boolean userCreated) {
 
         parseJSON(TYPE_ITEM, userCreated, list_id);
@@ -125,6 +149,7 @@ public class ModifyListActivity extends AppCompatActivity implements StartDragLi
         touchHelper.startDrag(viewHolder);
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     private void parseJSON(int viewType, boolean userCreated, int list_id) {
         JSONObject obj;
 
@@ -142,19 +167,25 @@ public class ModifyListActivity extends AppCompatActivity implements StartDragLi
 
                 // header
                 if (viewType == 1) {
+                    item = new ModifyListPageItem();
+
                     TextView title = findViewById(R.id.txtModListTitle);
                     TextView description = findViewById(R.id.txtModListDescription);
                     ImageView image = findViewById(R.id.modlist_image);
 
-                    title.setText(listDetail.getString("title"));
-                    description.setText(listDetail.getString("description"));
+                    item.setTitle(listDetail.getString("title"));
+                    item.setDescription(listDetail.getString("description"));
+
+                    title.setText(item.getTitle());
+                    description.setText(item.getTitle());
+
+                    items.add(item);
                 }
                 // list item
                 else {
                     JSONObject listItem = listDetail.getJSONObject("listObjects");
 
                     for (int i = 0; i < listItem.length(); i++) {
-
                         item = new ModifyListPageItem();
                         ranks.add(String.valueOf(i + 1));
 
@@ -185,5 +216,40 @@ public class ModifyListActivity extends AppCompatActivity implements StartDragLi
         }
 
         return json;
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
+    public void saveToFile() {
+        JSONObject obj = new JSONObject();
+        JSONObject listObject = new JSONObject();
+
+        try {
+            obj.put("list_id", 2);
+            obj.put("title", (items.get(0).getTitle()));
+            obj.put("description", (items.get(0).getDescription()));
+            obj.put("userCreated", (items.get(0).isUserCreated()));
+            obj.put("creator", "crizzuti94");
+
+            org.json.simple.JSONArray list = new org.json.simple.JSONArray();
+
+            for (int i = 1; i < items.size(); i++) {
+                list.add(listObject.put("object" + i, items.get(i).getTitle()));
+            }
+
+            obj.put("listObjects", list);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        try {
+            FileOutputStream fOut = openFileOutput("myJSON.json", MODE_APPEND | MODE_PRIVATE);
+            OutputStreamWriter osw = new OutputStreamWriter(fOut);
+            osw.write(obj.toString());
+            osw.flush();
+            osw.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
     }
 }
