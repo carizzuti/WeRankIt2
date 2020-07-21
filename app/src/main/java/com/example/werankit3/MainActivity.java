@@ -6,6 +6,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
+import android.content.res.AssetManager;
 import android.os.Bundle;
 import android.view.MenuItem;
 
@@ -15,14 +16,19 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity implements HomePageAdapter.OnListItemListener {
 
     public static final String EXTRA_USER_CREATED = "com.example.werankit3.EXTRA_USER_CREATED";
     public static final String EXTRA_ID = "com.example.werankit3.EXTRA_ID";
+    public static final String EXTRA_NAME = "com.example.werankit3.EXTRA_NAME";
     public static final String USER_ID = "crizzuti94";
 
     private RecyclerView recyclerView;
@@ -68,6 +74,8 @@ public class MainActivity extends AppCompatActivity implements HomePageAdapter.O
                 return false;
             }
         });
+
+        copyAssets();
 
         recyclerView = (RecyclerView) findViewById(R.id.recyclerViewHome);
         createList();
@@ -143,7 +151,59 @@ public class MainActivity extends AppCompatActivity implements HomePageAdapter.O
         Intent intent = new Intent(this, ModifyListActivity.class);
         intent.putExtra(EXTRA_USER_CREATED, (items.get(position)).isUserCreated());
         intent.putExtra(EXTRA_ID, (items.get(position)).getList_id());
+        intent.putExtra(EXTRA_NAME, (items.get(position)).getTitle());
         startActivity(intent);
+    }
+
+    private void copyAssets() {
+        AssetManager assetManager = getAssets();
+        String[] files = null;
+
+        try {
+            files = assetManager.list("");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        if (files != null) for (String filename : files) {
+            InputStream in = null;
+            OutputStream out = null;
+
+            try {
+                in = assetManager.open(filename);
+                File outFile = new File(getFilesDir(), filename);
+                out = new FileOutputStream(outFile);
+                copyFile(in, out);
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            finally {
+                if (in != null) {
+                    try {
+                        in.close();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+                if (out != null) {
+                    try {
+                        out.close();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        }
+    }
+
+    private void copyFile(InputStream in, OutputStream out) throws IOException {
+        byte[] buffer = new byte[1024];
+        int read;
+        while ((read = in.read(buffer)) != -1) {
+            out.write(buffer, 0, read);
+        }
     }
 }
 

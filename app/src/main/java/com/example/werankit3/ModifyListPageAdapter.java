@@ -2,6 +2,8 @@ package com.example.werankit3;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.ContextWrapper;
+import android.content.Intent;
 import android.graphics.Color;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -13,22 +15,26 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.werankit3.utils.JSONHelper;
+
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 
 public class ModifyListPageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> implements ItemMoveCallback.ItemTouchHelperContract {
 
     private static int TYPE_HEADER = 1;
     private static int TYPE_ITEM = 2;
-    private ArrayList<ModifyListPageItem> items;
+    private List<ModifyListPageItem> items;
 
     private final StartDragListener mStartDragListener;
 
-    public ModifyListPageAdapter(ArrayList<ModifyListPageItem> items, StartDragListener startDragListener) {
+    public ModifyListPageAdapter(List<ModifyListPageItem> items, StartDragListener startDragListener) {
         mStartDragListener = startDragListener;
         this.items = items;
     }
@@ -150,7 +156,6 @@ public class ModifyListPageAdapter extends RecyclerView.Adapter<RecyclerView.Vie
         }
 
         notifyItemMoved(fromPosition, toPosition);
-
     }
 
     @Override
@@ -161,5 +166,9 @@ public class ModifyListPageAdapter extends RecyclerView.Adapter<RecyclerView.Vie
     @Override
     public void onRowClear(ModifyListPageAdapter.ItemViewHolder myViewHolder) {
         myViewHolder.rowView.setBackgroundColor(Color.WHITE);
+    }
+
+    public List<ModifyListPageItem> updateList() {
+        return items;
     }
 }

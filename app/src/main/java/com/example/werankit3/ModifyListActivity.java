@@ -1,9 +1,11 @@
 package com.example.werankit3;
 
 import android.content.Intent;
+import android.content.res.AssetManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.JsonWriter;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -18,6 +20,7 @@ import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.werankit3.utils.JSONHelper;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import org.json.JSONArray;
@@ -33,9 +36,11 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Vector;
 
 import static java.lang.System.out;
@@ -44,14 +49,18 @@ public class ModifyListActivity extends AppCompatActivity implements StartDragLi
 
     private static int TYPE_HEADER = 1;
     private static int TYPE_ITEM = 2;
+    private static final String TAG = "JSONHelper";
+
     RecyclerView recyclerViewList, recyclerViewRank;
     ModifyListPageAdapter mAdapterList;
     RankAdapter mAdapterRank;
     ItemTouchHelper touchHelper;
     Button btnSave;
 
-    ArrayList<ModifyListPageItem> items = new ArrayList<>();
+    List<ModifyListPageItem> listItems = new ArrayList<>();
+    List<ModifyListPageItem> fullList = new ArrayList<>();
     ModifyListPageItem item;
+    ModifyListPageItem listHead;
 
     Vector<String> ranks = new Vector<String>();
 
@@ -100,14 +109,15 @@ public class ModifyListActivity extends AppCompatActivity implements StartDragLi
 
         Intent intent = getIntent();
         boolean userCreatedList = intent.getBooleanExtra(MainActivity.EXTRA_USER_CREATED, false);
+        String listName = intent.getStringExtra(MainActivity.EXTRA_NAME);
         int list_id = intent.getIntExtra(MainActivity.EXTRA_ID, 1);
 
         recyclerViewList = findViewById(R.id.recyclerViewModifyList);
         recyclerViewRank = findViewById(R.id.recyclerViewRank);
         btnSave = findViewById(R.id.button3);
 
-        createHeader(list_id, userCreatedList);
-        createList(list_id, userCreatedList);
+        createHeader(list_id, userCreatedList, listName);
+        createList(list_id, userCreatedList, listName);
 
         recyclerViewList.setLayoutManager(new LinearLayoutManager(this));
         recyclerViewRank.setLayoutManager(new LinearLayoutManager(this));
@@ -119,21 +129,19 @@ public class ModifyListActivity extends AppCompatActivity implements StartDragLi
                 saveToFile();
             }
         });
-
-
     }
 
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
-    private void createHeader(int list_id, boolean userCreated) {
-        parseJSON(TYPE_HEADER, userCreated, list_id);
+    private void createHeader(int list_id, boolean userCreated, String name) {
+        parseJSON(TYPE_HEADER, userCreated, list_id, name);
     }
 
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
-    public void createList(int list_id, boolean userCreated) {
+    public void createList(int list_id, boolean userCreated, String name) {
 
-        parseJSON(TYPE_ITEM, userCreated, list_id);
+        parseJSON(TYPE_ITEM, userCreated, list_id, name);
 
-        mAdapterList = new ModifyListPageAdapter(items, this);
+        mAdapterList = new ModifyListPageAdapter(listItems, this);
         mAdapterRank = new RankAdapter(ranks);
 
         ItemTouchHelper.Callback callback = new ItemMoveCallback(mAdapterList);
@@ -150,54 +158,85 @@ public class ModifyListActivity extends AppCompatActivity implements StartDragLi
     }
 
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
-    private void parseJSON(int viewType, boolean userCreated, int list_id) {
-        JSONObject obj;
+    private void parseJSON(int viewType, boolean userCreated, int list_id, String listName) {
+      String fileName = MainActivity.USER_ID + "_" + listName + "_" + "modified_list.json";
+      File file = new File(getFilesDir(), fileName);
 
-        try {
+      if (file.exists()) {
+          fullList = JSONHelper.importFromJSON(this, fileName);
 
-            if (userCreated)
-                obj = new JSONObject(loadJSONFromAsset("user_created_lists.json"));
-            else
-                obj = new JSONObject(loadJSONFromAsset("dev_created_lists.json"));
+          if (viewType == 1) {
+              listHead = new ModifyListPageItem();
 
-            JSONArray listArray = obj.getJSONArray("lists");
+              TextView title = findViewById(R.id.txtModListTitle);
+              TextView description = findViewById(R.id.txtModListDescription);
 
-            //for (int i = 0; i < listArray.length(); i++) {
-                JSONObject listDetail = listArray.getJSONObject(list_id - 1);
+              listHead.setTitle(fullList.get(0).getTitle());
+              listHead.setDescription(fullList.get(0).getDescription());
 
-                // header
-                if (viewType == 1) {
-                    item = new ModifyListPageItem();
+              title.setText(listHead.getTitle());
+              description.setText(listHead.getTitle());
+          }
+          else {
+              for (int j = 1; j < fullList.size(); j++) {
+                  item = new ModifyListPageItem();
+                  ranks.add(String.valueOf(j));
 
-                    TextView title = findViewById(R.id.txtModListTitle);
-                    TextView description = findViewById(R.id.txtModListDescription);
-                    ImageView image = findViewById(R.id.modlist_image);
+                  item.setTitle(fullList.get(j).getTitle());
+                  listItems.add(item);
+              }
+          }
+      }
+      else {
 
-                    item.setTitle(listDetail.getString("title"));
-                    item.setDescription(listDetail.getString("description"));
+          JSONObject obj;
 
-                    title.setText(item.getTitle());
-                    description.setText(item.getTitle());
+          try {
+              if (userCreated)
+                  obj = new JSONObject(loadJSONFromAsset("user_created_lists.json"));
+              else
+                  obj = new JSONObject(loadJSONFromAsset("dev_created_lists.json"));
 
-                    items.add(item);
-                }
-                // list item
-                else {
-                    JSONObject listItem = listDetail.getJSONObject("listObjects");
+              JSONArray listArray = obj.getJSONArray("lists");
 
-                    for (int i = 0; i < listItem.length(); i++) {
-                        item = new ModifyListPageItem();
-                        ranks.add(String.valueOf(i + 1));
+              //for (int i = 0; i < listArray.length(); i++) {
+              JSONObject listDetail = listArray.getJSONObject(list_id - 1);
 
-                        item.setTitle(listItem.getString("object" + (i+1)));
-                        //item.setImage(images[i - 1]);
-                        items.add(item);
-                    }
-                }
-            //}
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
+              // header
+              if (viewType == 1) {
+                  listHead = new ModifyListPageItem();
+
+                  TextView title = findViewById(R.id.txtModListTitle);
+                  TextView description = findViewById(R.id.txtModListDescription);
+                  ImageView image = findViewById(R.id.modlist_image);
+
+                  listHead.setTitle(listDetail.getString("title"));
+                  listHead.setDescription(listDetail.getString("description"));
+
+                  title.setText(listHead.getTitle());
+                  description.setText(listHead.getTitle());
+
+                  fullList.add(listHead);
+              }
+              // list item
+              else {
+                  JSONObject listItem = listDetail.getJSONObject("listObjects");
+
+                  for (int j = 0; j < listItem.length(); j++) {
+                      item = new ModifyListPageItem();
+                      ranks.add(String.valueOf(j + 1));
+
+                      item.setTitle(listItem.getString("object" + (j + 1)));
+                      //item.setImage(images[i - 1]);*/
+                      fullList.add(item);
+                      listItems.add(item);
+                  }
+              }
+              //}
+          } catch (JSONException e) {
+              e.printStackTrace();
+          }
+      }
     }
 
     public String loadJSONFromAsset(String filename) {
@@ -220,36 +259,15 @@ public class ModifyListActivity extends AppCompatActivity implements StartDragLi
 
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     public void saveToFile() {
-        JSONObject obj = new JSONObject();
-        JSONObject listObject = new JSONObject();
+        fullList = mAdapterList.updateList();
+        fullList.add(0, listHead);
+        boolean result = JSONHelper.exportToJson(this, fullList, MainActivity.USER_ID + "_" + listHead.getTitle() + "_modified_list.json");
 
-        try {
-            obj.put("list_id", 2);
-            obj.put("title", (items.get(0).getTitle()));
-            obj.put("description", (items.get(0).getDescription()));
-            obj.put("userCreated", (items.get(0).isUserCreated()));
-            obj.put("creator", "crizzuti94");
-
-            org.json.simple.JSONArray list = new org.json.simple.JSONArray();
-
-            for (int i = 1; i < items.size(); i++) {
-                list.add(listObject.put("object" + i, items.get(i).getTitle()));
-            }
-
-            obj.put("listObjects", list);
-        } catch (JSONException e) {
-            e.printStackTrace();
+        if (result) {
+            Toast.makeText(this, "Data Saved", Toast.LENGTH_SHORT).show();
         }
-
-        try {
-            FileOutputStream fOut = openFileOutput("myJSON.json", MODE_APPEND | MODE_PRIVATE);
-            OutputStreamWriter osw = new OutputStreamWriter(fOut);
-            osw.write(obj.toString());
-            osw.flush();
-            osw.close();
-        } catch (IOException e) {
-            e.printStackTrace();
+        else {
+            Toast.makeText(this, "Save Failed", Toast.LENGTH_SHORT).show();
         }
-
     }
 }
