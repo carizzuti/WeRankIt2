@@ -10,12 +10,14 @@ import android.os.Bundle;
 import android.view.MenuItem;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.ArrayList;
 
 public class AccountActivity extends AppCompatActivity {
 
     private RecyclerView recyclerView;
+    private FirebaseAuth firebaseAuth;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,6 +58,8 @@ public class AccountActivity extends AppCompatActivity {
                 return false;
             }
         });
+
+        firebaseAuth = firebaseAuth.getInstance();
 
         initView();
     }
