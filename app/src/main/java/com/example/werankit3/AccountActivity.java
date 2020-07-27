@@ -72,7 +72,7 @@ public class AccountActivity extends AppCompatActivity {
         items.add(item);
 
         item = new AccountPageItem();
-        item.setAccountName("crizzuti94");
+        item.setAccountName(MainActivity.USER_ID);
         items.add(item);
 
         item = new AccountPageItem();
