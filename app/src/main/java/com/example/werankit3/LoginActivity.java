@@ -44,7 +44,6 @@ public class LoginActivity extends AppCompatActivity {
         user = firebaseAuth.getCurrentUser();
 
         if (user != null) {
-            MainActivity.USER_ID = user.getEmail();
             finish();
             startActivity(new Intent(LoginActivity.this, MainActivity.class));
         }
@@ -75,7 +74,6 @@ public class LoginActivity extends AppCompatActivity {
                 progressDialog.dismiss();
                 if (task.isSuccessful()) {
                     Toast.makeText(LoginActivity.this, "Login Successful", Toast.LENGTH_LONG).show();
-                    MainActivity.USER_ID = user.getEmail();
                     startActivity(new Intent(LoginActivity.this, MainActivity.class));
                 }
                 else

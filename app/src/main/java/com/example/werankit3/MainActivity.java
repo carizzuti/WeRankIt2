@@ -29,7 +29,6 @@ public class MainActivity extends AppCompatActivity implements HomePageAdapter.O
     public static final String EXTRA_USER_CREATED = "com.example.werankit3.EXTRA_USER_CREATED";
     public static final String EXTRA_ID = "com.example.werankit3.EXTRA_ID";
     public static final String EXTRA_NAME = "com.example.werankit3.EXTRA_NAME";
-    public static String USER_ID = "";
 
     private RecyclerView recyclerView;
     ArrayList<HomePageItem> items = new ArrayList<>();

@@ -76,7 +76,7 @@ public class AccountActivity extends AppCompatActivity {
         items.add(item);
 
         item = new AccountPageItem();
-        item.setAccountName(MainActivity.USER_ID);
+        item.setAccountName(firebaseAuth.getCurrentUser().getEmail());
         items.add(item);
 
         item = new AccountPageItem();

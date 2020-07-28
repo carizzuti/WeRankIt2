@@ -22,6 +22,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.werankit3.utils.JSONHelper;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.firebase.auth.FirebaseAuth;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -61,6 +62,8 @@ public class ModifyListActivity extends AppCompatActivity implements StartDragLi
     List<ModifyListPageItem> fullList = new ArrayList<>();
     ModifyListPageItem item;
     ModifyListPageItem listHead;
+
+    FirebaseAuth firebaseAuth;
 
     Vector<String> ranks = new Vector<String>();
 
@@ -106,6 +109,8 @@ public class ModifyListActivity extends AppCompatActivity implements StartDragLi
                 return false;
             }
         });
+
+        firebaseAuth = FirebaseAuth.getInstance();
 
         Intent intent = getIntent();
         boolean userCreatedList = intent.getBooleanExtra(MainActivity.EXTRA_USER_CREATED, false);
@@ -159,7 +164,7 @@ public class ModifyListActivity extends AppCompatActivity implements StartDragLi
 
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     private void parseJSON(int viewType, boolean userCreated, int list_id, String listName) {
-      String fileName = MainActivity.USER_ID + "_" + listName + "_" + "modified_list.json";
+      String fileName = firebaseAuth.getCurrentUser().getEmail() + "_" + listName + "_" + "modified_list.json";
       File file = new File(getFilesDir(), fileName);
 
       if (file.exists()) {
@@ -261,7 +266,7 @@ public class ModifyListActivity extends AppCompatActivity implements StartDragLi
     public void saveToFile() {
         fullList = mAdapterList.updateList();
         fullList.add(0, listHead);
-        boolean result = JSONHelper.exportToJson(this, fullList, MainActivity.USER_ID + "_" + listHead.getTitle() + "_modified_list.json");
+        boolean result = JSONHelper.exportToJson(this, fullList, firebaseAuth.getCurrentUser().getEmail() + "_" + listHead.getTitle() + "_modified_list.json");
 
         if (result) {
             Toast.makeText(this, "Data Saved", Toast.LENGTH_SHORT).show();
